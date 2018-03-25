@@ -30,6 +30,10 @@
         <service
             android:name=".MQTTDataService"
             android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".MQTTClientService"
+            android:enabled="true"
             android:exported="false"></service>
     </application>
 

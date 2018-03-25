@@ -16,6 +16,11 @@ import android.content.Intent
 import android.os.AsyncTask
 import android.provider.Settings
 import com.torosoft.heater.heatermanager.Entities.Measure
+import android.support.v4.content.LocalBroadcastManager
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
+
+
 
 
 /**
@@ -60,20 +65,19 @@ class MainActivity : Activity() {
         setContentView(R.layout.activity_main)
         updateImages()
 
-        // Disable ALWAYS ON screen
-/*
-        Settings.Global.putInt(getContentResolver(),
-                Settings.Global.STAY_ON_WHILE_PLUGGED_IN, 0);
-*/
         // Create DB instance
         MainActivity.database = Room.databaseBuilder(this, MeasureDatabase::class.java, "measures").build()
 
 
         // Start server MQTT
-        val intent = Intent(this, MQTTDataService::class.java)
+        var intent = Intent(this, MQTTDataService::class.java)
         startService(intent)
 
-        getMqttClient(this, "tcp://localhost:1883", "Viewer")
+        // Start client MQTT service
+        intent = Intent(this, MQTTClientService::class.java)
+        startService(intent)
+
+        //getMqttClient(this, "tcp://localhost:1883", "Viewer")
 
         onoff_auto.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -107,7 +111,6 @@ class MainActivity : Activity() {
         })
 
         startTimer()
-
     }
 
     fun startTimer() {
@@ -141,7 +144,7 @@ class MainActivity : Activity() {
 
                         //get the current timeStamp
                         var calendar: Calendar = Calendar.getInstance()
-                        var simpleDateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
+                        var simpleDateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy - HH:mm:ss", Locale.ITALY);
                         val strDate: String  = simpleDateFormat.format(calendar.getTime());
                         date.setText(strDate)
                     }
@@ -170,106 +173,30 @@ class MainActivity : Activity() {
         }
     }
 
-    fun getMqttClient(context: Context, brokerUrl: String, clientId: String): MqttAndroidClient {
-        var mqttClient = MqttAndroidClient(context, brokerUrl, clientId)
-        try {
-            var token = mqttClient.connect()
-            token.actionCallback = object: IMqttActionListener {
-                override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d(TAG, "Success");
-
-                    // Subscribe all messages for internal sensors
-                    var tokenSub = mqttClient.subscribe("/sensors/internal/temperature/#", 0)
-                    tokenSub.actionCallback = object: IMqttActionListener {
-                        override fun onSuccess(asyncActionToken: IMqttToken?) {
-                            Log.d(TAG, "Subscription Success");
-                        }
-
-                        override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                            Log.d(TAG, "Subscription Success");
-                        }
-                    }
-
-                    // Subscribe all messages for external sensors
-                    tokenSub = mqttClient.subscribe("/sensors/external/temperature/#", 0)
-                    tokenSub.actionCallback = object: IMqttActionListener {
-                        override fun onSuccess(asyncActionToken: IMqttToken?) {
-                            Log.d(TAG, "Subscription Success");
-                        }
-
-                        override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                            Log.d(TAG, "Subscription Success");
-                        }
-                    }
-                }
-
-                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    Log.d(TAG, "Error");
-                    exception?.printStackTrace()
-                }
-            }
-
-            mqttClient.setCallback(object: MqttCallback {
-                override fun messageArrived(topic: String?, message: MqttMessage?) {
-                    Log.d(TAG, "Topic: " + topic?.toString() + " Message: " + message?.toString())
-                    if (topic?.contains("temperature") == true) {
-                        if (topic?.contains("internal") == true) {
-                            internal_temperature.text = message?.toString() + "°"
-                        }
-                        if (topic?.contains("external") == true) {
-                            external_temperature.text = message?.toString() + "°"
-                        }
-                    }
-
-                    var measure: Measure = Measure(0,
-                            Date(),
-                            "temperature",
-                            message?.toString()!!.toDouble(),
-                            message?.toString(),
-                            topic
-                    )
-
-                    try {
-                        AsyncTaskExample().execute(measure)
-
-                    } catch (ex: Exception) {
-                        Log.d(TAG, "Exception: " + ex.message)
-                    }
-                }
-
-                override fun connectionLost(cause: Throwable?) {
-                    mqttClient.disconnect();
-                    getMqttClient(context, brokerUrl, clientId)
-
-                    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-
-                override fun deliveryComplete(token: IMqttDeliveryToken?) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-            })
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return mqttClient
+    public override fun onResume() {
+        super.onResume()
+        // This registers mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mMessageReceiver,
+                        IntentFilter("MQTT-Value"))
     }
 
-    inner class AsyncTaskExample: AsyncTask<Measure, String, Boolean>() {
-        override fun doInBackground(vararg measures: Measure?): Boolean {
-            try {
-                for (measure: Measure? in measures) {
-                    MainActivity.database?.measureDao()?.insert(measure!!)
-                }
-            } catch (ex: Exception) {
-                Log.d(TAG, "Exception: " + ex.message)
-                return false
+    // Handling the received Intents for the "my-integer" event
+    private val mMessageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.hasExtra("internal_temperature")) {
+                internal_temperature.text = intent.getStringExtra("internal_temperature")
             }
-            return true
+            if (intent.hasExtra("external_temperature")) {
+                external_temperature.text = intent.getStringExtra("external_temperature")
+            }
         }
+    }
 
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
+    override fun onPause() {
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(mMessageReceiver)
+        super.onPause()
     }
 }

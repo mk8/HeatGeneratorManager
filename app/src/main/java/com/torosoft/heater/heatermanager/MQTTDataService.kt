@@ -3,6 +3,7 @@ package com.torosoft.heater.heatermanager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
 import android.os.Environment
 import android.os.Handler
 import android.os.IBinder
@@ -14,11 +15,13 @@ import io.moquette.server.config.MemoryConfig
 import java.io.File
 import java.io.IOException
 import java.util.*
+import android.content.ContentValues.TAG
+
+
 
 
 class MQTTDataService : Service() {
 
-    var context: Context = this
     var handler: Handler? = null
     var runnable: Runnable? = null
 
@@ -27,7 +30,6 @@ class MQTTDataService : Service() {
         //throw UnsupportedOperationException("Not yet implemented")
         return null;
     }
-
 
     override fun onCreate() {
 
@@ -48,7 +50,6 @@ class MQTTDataService : Service() {
         var broker = Server();
         try {
             var storageDir = Environment.getExternalStorageDirectory().absolutePath + File.separator + "mqtt"
-            Log.d(MainActivity.TAG, "Where data are stored: " + storageDir)
             var memoryConfig: MemoryConfig = MemoryConfig(Properties())
             var f: File = File(storageDir)
             if (f.exists()) {
@@ -64,7 +65,6 @@ class MQTTDataService : Service() {
                     Log.d(MainActivity.TAG, "Storage created")
                 } else {
                     Log.d(MainActivity.TAG, "Unable to create Storage ")
-                    //return false
                     return
                 }
 
@@ -74,16 +74,12 @@ class MQTTDataService : Service() {
                     BrokerConstants.PERSISTENT_STORE_PROPERTY_NAME,
                     storageDir
             )
-            //Environment.getExternalStorageDirectory().absolutePath + File.separator
 
             broker.startServer(memoryConfig)
-            //return true
             return
         } catch (ex: IOException) {
             ex.printStackTrace()
-            //return false
             return
         }
     }
-
 }
