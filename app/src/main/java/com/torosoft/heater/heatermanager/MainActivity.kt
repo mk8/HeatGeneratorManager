@@ -49,14 +49,15 @@ import android.R.attr.data
  */
 class MainActivity : Activity() {
 
-    var isAuto: Boolean = false
-    var isSun: Boolean = false
-    var isMoon: Boolean = true
+    //var isAuto: Boolean = false
+    //var isSun: Boolean = false
+    //var isMoon: Boolean = true
 
     var timer: Timer? = null
     var timerTask: TimerTask? = null
 
     val handler = Handler()
+    val heaterState: HeaterState = HeaterState.Instance()
 
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
@@ -84,25 +85,21 @@ class MainActivity : Activity() {
         //getMqttClient(this, "tcp://localhost:1883", "Viewer")
 
         onoff_auto.setOnClickListener {
-            isAuto = ! isAuto
-            updateImages()
-        }
-        onoff_auto.setOnClickListener {
-            isAuto = true
-            isSun = false
-            isMoon = false
+            heaterState.isAuto = true
+            heaterState.isSun = false
+            heaterState.isMoon = false
             updateImages()
         }
         onoff_sun.setOnClickListener {
-            isAuto = false
-            isSun = true
-            isMoon = false
+            heaterState.isAuto = false
+            heaterState.isSun = true
+            heaterState.isMoon = false
             updateImages()
         }
         onoff_moon.setOnClickListener {
-            isAuto = false
-            isSun = false
-            isMoon = true
+            heaterState.isAuto = false
+            heaterState.isSun = false
+            heaterState.isMoon = true
             updateImages()
         }
 
@@ -155,23 +152,25 @@ class MainActivity : Activity() {
     }
 
     fun updateImages() {
-        if (isAuto) {
+        if (heaterState.isAuto) {
             onoff_auto.setImageResource(R.drawable.auto_on)
         } else {
             onoff_auto.setImageResource(R.drawable.auto_off)
         }
-        if (isSun) {
+        if (heaterState.isSun) {
             onoff_sun.setImageResource(R.drawable.sun_on)
             onoff_status.setImageResource(R.drawable.on)
         } else {
             onoff_sun.setImageResource(R.drawable.sun_off)
             onoff_status.setImageResource(R.drawable.off)
         }
-        if (isMoon) {
+        if (heaterState.isMoon) {
             onoff_moon.setImageResource(R.drawable.moon_on)
         } else {
             onoff_moon.setImageResource(R.drawable.moon_off)
         }
+
+        desiredTemperature.text = heaterState.currentSetpointTemperature.toString()
     }
 
     public override fun onResume() {
