@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">HeaterManager</string>
+    <string name="dialog_setpoint_temperature_title">Set desired temperature</string>
+    <string name="dialog_setpoint_temperature_cancel">Cancel</string>
+    <string name="dialog_setpoint_temperature_confirm">Set</string>
+
 </resources>

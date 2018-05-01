@@ -19,6 +19,10 @@ import com.torosoft.heater.heatermanager.Entities.Measure
 import android.support.v4.content.LocalBroadcastManager
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
+import android.widget.Toast
+import android.R.attr.data
+
+
 
 
 
@@ -79,36 +83,33 @@ class MainActivity : Activity() {
 
         //getMqttClient(this, "tcp://localhost:1883", "Viewer")
 
-        onoff_auto.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                isAuto = ! isAuto
-                updateImages()
-            }
-        })
-        onoff_auto.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                isAuto = true
-                isSun = false
-                isMoon = false
-                updateImages()
-            }
-        })
-        onoff_sun.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                isAuto = false
-                isSun = true
-                isMoon = false
-                updateImages()
-            }
-        })
-        onoff_moon.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                isAuto = false
-                isSun = false
-                isMoon = true
-                updateImages()
-            }
-        })
+        onoff_auto.setOnClickListener {
+            isAuto = ! isAuto
+            updateImages()
+        }
+        onoff_auto.setOnClickListener {
+            isAuto = true
+            isSun = false
+            isMoon = false
+            updateImages()
+        }
+        onoff_sun.setOnClickListener {
+            isAuto = false
+            isSun = true
+            isMoon = false
+            updateImages()
+        }
+        onoff_moon.setOnClickListener {
+            isAuto = false
+            isSun = false
+            isMoon = true
+            updateImages()
+        }
+
+        desiredTemperature.setOnClickListener {
+            var dialogFragment = SetTemperatureDialogFragment()
+            dialogFragment.show(fragmentManager, "Desired Temperature")
+        }
 
         startTimer()
     }
