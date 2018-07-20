@@ -21,8 +21,10 @@ import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import android.widget.Toast
 import android.R.attr.data
-
-
+import android.view.Display
+import android.hardware.display.DisplayManager
+import android.view.WindowManager
+import android.provider.AlarmClock.EXTRA_MESSAGE
 
 
 
@@ -49,15 +51,13 @@ import android.R.attr.data
  */
 class MainActivity : Activity() {
 
-    //var isAuto: Boolean = false
-    //var isSun: Boolean = false
-    //var isMoon: Boolean = true
-
     var timer: Timer? = null
     var timerTask: TimerTask? = null
 
     val handler = Handler()
     val heaterState: HeaterState = HeaterState.Instance()
+    val TIMEOUT_BLANK: Int = 5
+    var tick: Int = TIMEOUT_BLANK
 
     companion object {
         val TAG = MainActivity.javaClass.canonicalName
@@ -104,29 +104,29 @@ class MainActivity : Activity() {
         }
 
         desiredTemperature.setOnClickListener {
+            tick = TIMEOUT_BLANK
             var dialogFragment = SetTemperatureDialogFragment()
             dialogFragment.show(fragmentManager, "Desired Temperature")
         }
 
-        startTimer()
     }
 
     fun startTimer() {
         //set a new Timer
-        timer = Timer();
+        timer = Timer()
 
         //initialize the TimerTask's job
-        initializeTimerTask();
+        initializeTimerTask()
 
-        timer!!.schedule(timerTask, 1000, 1000);
+        timer!!.schedule(timerTask, 1000, 1000)
     }
 
-    fun stoptimertask(v: View) {
+    fun stoptimertask() {
 
         //stop the timer, if it's not already null
         if (timer != null) {
-            timer!!.cancel();
-            timer = null;
+            timer!!.cancel()
+            timer = null
         }
     }
 
@@ -142,9 +142,19 @@ class MainActivity : Activity() {
 
                         //get the current timeStamp
                         var calendar: Calendar = Calendar.getInstance()
-                        var simpleDateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy - HH:mm:ss", Locale.ITALY);
-                        val strDate: String  = simpleDateFormat.format(calendar.getTime());
+                        var simpleDateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy - HH:mm:ss", Locale.ITALY)
+                        val strDate: String  = simpleDateFormat.format(calendar.getTime())
                         date.setText(strDate)
+
+                        if (tick < 0) {
+
+                            val intent = Intent(this@MainActivity, BlankScreenActivity::class.java)
+                            startActivity(intent)
+                            tick = TIMEOUT_BLANK
+
+                        } else {
+                            tick--
+                        }
                     }
                 })
             }
@@ -152,6 +162,7 @@ class MainActivity : Activity() {
     }
 
     fun updateImages() {
+        tick = TIMEOUT_BLANK
         if (heaterState.isAuto) {
             onoff_auto.setImageResource(R.drawable.auto_on)
         } else {
@@ -179,6 +190,12 @@ class MainActivity : Activity() {
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mMessageReceiver,
                         IntentFilter("MQTT-Value"))
+        startTimer()
+
+        val layoutParams = window.attributes
+        layoutParams.screenBrightness = 1.0f
+        window.attributes=layoutParams
+
     }
 
     // Handling the received Intents for the "my-integer" event
@@ -197,6 +214,7 @@ class MainActivity : Activity() {
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(mMessageReceiver)
+        stoptimertask()
         super.onPause()
     }
 }

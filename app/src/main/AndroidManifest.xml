@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.things.permission.MODIFY_SCREEN_SETTINGS" />
 
     <application android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
         <uses-library android:name="com.google.android.things" />
@@ -22,8 +23,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.IOT_LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </activity>
 
@@ -34,7 +35,9 @@
         <service
             android:name=".MQTTClientService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".BlankScreenActivity"></activity>
     </application>
 
 </manifest>

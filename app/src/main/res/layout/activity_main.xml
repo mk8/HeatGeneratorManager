@@ -86,6 +86,17 @@
         app:layout_constraintStart_toEndOf="@+id/onoff_sun"
         tools:layout_editor_absoluteY="16dp" />
 
+    <ImageButton
+        android:id="@+id/preferences"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="28dp"
+        android:backgroundTint="@android:color/background_dark"
+        android:src="@android:drawable/ic_menu_preferences"
+        app:layout_constraintBottom_toTopOf="@+id/date"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/onoff_status"
         android:layout_width="wrap_content"
