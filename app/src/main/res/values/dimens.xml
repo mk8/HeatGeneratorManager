@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_size">28sp</dimen>
+
+    <dimen name="row_intent_1">32sp</dimen>
+    <dimen name="row_right_margin_1">32sp</dimen>
+
+    <dimen name="text_section_size">40sp</dimen>
+
+</resources>

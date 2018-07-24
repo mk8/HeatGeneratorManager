@@ -25,8 +25,8 @@ import android.view.Display
 import android.hardware.display.DisplayManager
 import android.view.WindowManager
 import android.provider.AlarmClock.EXTRA_MESSAGE
-
-
+import android.R.menu
+import android.view.Menu
 
 
 /**
@@ -109,6 +109,10 @@ class MainActivity : Activity() {
             dialogFragment.show(fragmentManager, "Desired Temperature")
         }
 
+        preferences.setOnClickListener {
+            val intent = Intent(this, ConfigTemperatureActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun startTimer() {
