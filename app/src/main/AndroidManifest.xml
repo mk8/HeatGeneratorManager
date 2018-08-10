@@ -9,10 +9,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.things.permission.MODIFY_SCREEN_SETTINGS" />
 
-    <application android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
-        <uses-library android:name="com.google.android.things" />
+    <application
+        android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
+        >
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <uses-library android:name="com.google.android.things" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -28,16 +29,27 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".BlankScreenActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_config_temperature"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            />
+
+        <service
+            android:name="org.eclipse.paho.android.service.MqttService"
+            />
         <service
             android:name=".MQTTDataService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            />
         <service
             android:name=".MQTTClientService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            />
 
-        <activity android:name=".BlankScreenActivity"></activity>
     </application>
 
 </manifest>

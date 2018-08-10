@@ -4,5 +4,13 @@
     <string name="dialog_setpoint_temperature_cancel">Cancel</string>
     <string name="dialog_setpoint_temperature_confirm">Set</string>
     <string name="title_activity_config_temperature">Preferences</string>
-    
+
+    <string name="settings_toolbar_title">Settings</string>
+    <string name="tab_text_settings_days">Daily</string>
+    <string name="tab_text_settings_profiles">Profiles</string>
+    <string name="tab_text_settings_general">General</string>
+
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="settings_toolbar_save_button">Save</string>
 </resources>

@@ -56,7 +56,7 @@ class MainActivity : Activity() {
 
     val handler = Handler()
     val heaterState: HeaterState = HeaterState.Instance()
-    val TIMEOUT_BLANK: Int = 5
+    val TIMEOUT_BLANK: Int = 20
     var tick: Int = TIMEOUT_BLANK
 
     companion object {
@@ -110,7 +110,8 @@ class MainActivity : Activity() {
         }
 
         preferences.setOnClickListener {
-            val intent = Intent(this, ConfigTemperatureActivity::class.java)
+            //val intent = Intent(this, ConfigTemperatureActivity::class.java)
+            val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
     }

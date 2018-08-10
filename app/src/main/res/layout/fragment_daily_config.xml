@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ConfigTemperatureActivity"
+    tools:context=".SettingsActivity$PlaceholderFragment"
     >
 
 
@@ -15,13 +15,6 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_section_size"
-                android:text="Daily Settings"
-                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,11 +40,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"
                 android:text="Monday"
                 android:layout_marginLeft="@dimen/row_intent_1"
@@ -69,11 +57,6 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -99,11 +82,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"
                 android:text="Wednesday"
                 android:layout_marginLeft="@dimen/row_intent_1"
@@ -121,11 +99,6 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -151,11 +124,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"
                 android:text="Friday"
                 android:layout_marginLeft="@dimen/row_intent_1"
@@ -177,11 +145,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"
                 android:text="Saturday"
                 android:layout_marginLeft="@dimen/row_intent_1"
@@ -195,22 +158,5 @@
                 android:popupBackground="@color/colorBackgroudPopup"
                 />
         </TableRow>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Cancel"
-                />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="OK"
-                />
-        </LinearLayout>
     </TableLayout>
 </android.support.v4.widget.NestedScrollView>
