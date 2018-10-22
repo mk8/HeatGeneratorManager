@@ -25,6 +25,7 @@
                 android:layout_marginRight="@dimen/row_right_margin_1"
                 />
             <Button
+                android:id="@+id/sunTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"
@@ -45,6 +46,7 @@
                 android:layout_marginRight="@dimen/row_right_margin_1"
                 />
             <Button
+                android:id="@+id/moonTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"

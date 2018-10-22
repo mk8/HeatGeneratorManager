@@ -105,7 +105,10 @@ class MainActivity : Activity() {
 
         desiredTemperature.setOnClickListener {
             tick = TIMEOUT_BLANK
-            var dialogFragment = SetTemperatureDialogFragment()
+            var dialogFragment = SetTemperatureDialogFragment.newInstance(Integer.valueOf(desiredTemperature.text.toString())) {
+                heaterState.currentSetpointTemperature = it
+                updateImages()
+            }
             dialogFragment.show(fragmentManager, "Desired Temperature")
         }
 

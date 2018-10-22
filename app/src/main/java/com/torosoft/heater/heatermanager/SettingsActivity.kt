@@ -1,26 +1,25 @@
 package com.torosoft.heater.heatermanager
 
-import android.app.ActionBar
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.fragment_daily_config.view.*
-import kotlinx.android.synthetic.main.fragment_test.view.*
-import android.util.TypedValue
+//import kotlinx.android.synthetic.main.fragment_test.view.*
+import android.widget.Button
+
 //import android.support.test.espresso.web.model.Atoms.getTitle
 //import android.widget.RelativeLayout
 //import android.widget.TextView
@@ -55,41 +54,48 @@ class SettingsActivity : AppCompatActivity() {
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
 
-        container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
-        tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+        container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {
+            }
 
-/*        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-*/
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    2 -> {
+                        var moon = super@SettingsActivity.findViewById<Button>(R.id.moonTemperature)
+                        moon?.setOnClickListener {
+                            var dialogFragment = SetTemperatureDialogFragment.newInstance(Integer.valueOf(moon.text.toString())) {
+                                moon.text = it.toString()
+                            }
+                            dialogFragment.show(fragmentManager, "Set default temperature for MOON")
+                        }
+
+                        var sun = super@SettingsActivity.findViewById<Button>(R.id.sunTemperature)
+                        sun?.setOnClickListener {
+                            var dialogFragment = SetTemperatureDialogFragment.newInstance(Integer.valueOf(sun.text.toString())) {
+                                sun.text = it.toString()
+                            }
+                            dialogFragment.show(fragmentManager, "Set default temperature for SUN")
+                        }
+                    }
+                    else -> {
+                    }
+
+                }
+
+                TabLayout.TabLayoutOnPageChangeListener(tabs)
+            }
+        })
+        //container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+        tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.settings_menu, menu)
         return true
     }
-/*
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        if (id == R.id.action_settings) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-*/
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
@@ -127,30 +133,25 @@ class SettingsActivity : AppCompatActivity() {
                 1 -> {
                     rootView = inflater.inflate(R.layout.fragment_daily_config, container, false)
 
-                    val sampleStringList = arrayOf("Busy day", "Busy day with morning", "Weekend", "Vacation");
-
+                    val sampleStringList = arrayOf("Busy day", "Busy day with morning", "Weekend", "Vacation")
                     val spinnerArrayAdapter = ArrayAdapter<String>(
                             activity, R.layout.spinner_item, sampleStringList
                     )
                     spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item)
-                    rootView.sunday_spinner.setAdapter(spinnerArrayAdapter)
-                    rootView.monday_spinner.setAdapter(spinnerArrayAdapter)
-                    rootView.tuesday_spinner.setAdapter(spinnerArrayAdapter)
-                    rootView.wednesday_spinner.setAdapter(spinnerArrayAdapter)
-                    rootView.thursday_spinner.setAdapter(spinnerArrayAdapter)
-                    rootView.friday_spinner.setAdapter(spinnerArrayAdapter)
-                    rootView.saturday_spinner.setAdapter(spinnerArrayAdapter)
-
+                    rootView.sunday_spinner.adapter = spinnerArrayAdapter
+                    rootView.monday_spinner.adapter = spinnerArrayAdapter
+                    rootView.tuesday_spinner.adapter = spinnerArrayAdapter
+                    rootView.wednesday_spinner.adapter = spinnerArrayAdapter
+                    rootView.thursday_spinner.adapter= spinnerArrayAdapter
+                    rootView.friday_spinner.adapter = spinnerArrayAdapter
+                    rootView.saturday_spinner.adapter = spinnerArrayAdapter
                 }
                 2 -> {
                     rootView = inflater.inflate(R.layout.fragment_profiles_config, container, false)
-                    //rootView = inflater.inflate(R.layout.fragment_test, container, false)
-                    //rootView.section_label.text = getString(R.string.section_format, arguments?.getInt(ARG_SECTION_NUMBER))
                 }
                 else -> {
                     rootView = inflater.inflate(R.layout.fragment_general_config, container, false)
                 }
-
             }
             return rootView
         }

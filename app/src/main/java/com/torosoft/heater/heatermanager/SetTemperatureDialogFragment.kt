@@ -20,6 +20,7 @@ import android.app.Activity
 class SetTemperatureDialogFragment : DialogFragment() {
 
     var inflatedView: View? = null
+    var callback: (Int) -> Unit = {}
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
@@ -28,21 +29,20 @@ class SetTemperatureDialogFragment : DialogFragment() {
         inflatedView = inflater.inflate(R.layout.temperature_dialog_fragment, null)
         var builder = AlertDialog.Builder(activity)
         .setTitle(R.string.dialog_setpoint_temperature_title)
-        .setNegativeButton(R.string.dialog_setpoint_temperature_cancel,  {
+        .setNegativeButton(R.string.dialog_setpoint_temperature_cancel) {
             _ ,
             i -> Toast.makeText(this.context, "Desired temperature clicked", Toast.LENGTH_LONG).show()
-        })
-        .setPositiveButton(R.string.dialog_setpoint_temperature_confirm,  {
+        }
+        .setPositiveButton(R.string.dialog_setpoint_temperature_confirm) {
             _,
             i -> run {
-                var heaterState = HeaterState.Instance()
                 var td = inflatedView!!.findViewById<NumberPicker>(R.id.temperature_dialog_fragment_desired_temperature)
-                heaterState.currentSetpointTemperature = td.value
+                //var heaterState = HeaterState.Instance()
+                //heaterState.currentSetpointTemperature = td.value
+                callback(td.value)
             }
-        })
+        }
         .setView(inflatedView)
-
-
         return builder.create()
     }
 
@@ -50,17 +50,24 @@ class SetTemperatureDialogFragment : DialogFragment() {
         super.onResume()
 
         var td = inflatedView!!.findViewById<NumberPicker>(R.id.temperature_dialog_fragment_desired_temperature)
-        var heaterState = HeaterState.Instance()
+        val value = arguments.getInt((ARG_START_VALUE))
+
         td.minValue = 16
         td.maxValue = 26
-        td.value = heaterState.currentSetpointTemperature
+        td.value = value
+
         td.wrapSelectorWheel = false
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
-        super.onDismiss(dialog)
-        val activity = this.activity
-        if (activity is MainActivity)
-            (activity as MainActivity).updateImages()
+    companion object {
+        private val ARG_START_VALUE = "start_value"
+        fun newInstance(startValue: Int, callback: (Int) -> Unit): SetTemperatureDialogFragment {
+            val fragment = SetTemperatureDialogFragment()
+            val args = Bundle()
+            args.putInt(ARG_START_VALUE, startValue)
+            fragment.arguments = args
+            fragment.callback = callback
+            return fragment
+        }
     }
 }
